@@ -39,7 +39,8 @@ export default function MoviePage() {
           <h2 className="text-2xl font-bold text-white">Invalid IMDb ID</h2>
 
           <p className="mt-3 text-light-200">
-            We couldn't find a movie for the provided IMDb ID.
+            We couldn't find this IMDb title in our movie database. Some TV
+            shows or anime titles may not be supported.
           </p>
 
           <button
