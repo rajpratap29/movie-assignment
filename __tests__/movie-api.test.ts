@@ -1,17 +1,21 @@
-import { describe, it, expect } from "@jest/globals";
+import { GET } from "@/app/api/movie/route";
 
 describe("Movie API validation", () => {
   it("should fail when imdb id is missing", async () => {
-    const res = await fetch("http://localhost:3000/api/movie");
+    const req = new Request("http://localhost/api/movie");
 
-    expect(res).toBeDefined();
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(json.success).toBe(false);
   });
 
-  it("should validate imdb id format", () => {
-    const validId = "tt0133093";
-    const invalidId = "";
+  it("should validate imdb id format", async () => {
+    const req = new Request("http://localhost/api/movie?id=invalid123");
 
-    expect(validId.startsWith("tt")).toBe(true);
-    expect(invalidId === "").toBe(true);
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(json.success).toBe(false);
   });
 });
