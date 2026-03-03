@@ -6,7 +6,7 @@ A full-stack Next.js application that analyzes audience sentiment for any movie 
 
 ## 🚀 Live Demo
 
-👉 
+👉 https://movie-assignment-rust.vercel.app
 
 ---
 
