@@ -5,10 +5,24 @@ import Search from "@/components/Search";
 
 export default function Home() {
   const [imdbId, setImdbId] = useState("");
+  const [error, setError] = useState("");
+
+  const isValidImdbId = (id: string) => /^tt\d{6,}$/.test(id.trim());
 
   const handleSearch = () => {
-    if (!imdbId.trim()) return;
-    window.location.href = `/movie/${imdbId}`;
+    const trimmed = imdbId.trim();
+    if (!trimmed) {
+      setError("Please enter an IMDb ID");
+      return;
+    }
+
+    if (!isValidImdbId(trimmed)) {
+      setError("Enter a valid IMDb ID (e.g., tt4154796)");
+      return;
+    }
+
+    setError("");
+    window.location.href = `/movie/${trimmed}`;
   };
 
   return (
@@ -28,6 +42,10 @@ export default function Home() {
             setSearchTerm={setImdbId}
             onEnter={handleSearch}
           />
+
+          {error && (
+            <p className="text-red-500 text-sm mt-3 text-center">{error}</p>
+          )}
 
           <button
             onClick={handleSearch}
