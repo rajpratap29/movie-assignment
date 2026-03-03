@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Search from "../components/Search";
+import Search from "@/components/Search";
 
 export default function Home() {
   const [imdbId, setImdbId] = useState("");
