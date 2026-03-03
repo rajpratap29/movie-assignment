@@ -12,7 +12,7 @@ const Search = ({ searchTerm, setSearchTerm, onEnter }: Props) => {
 
         <input
           type="text"
-          placeholder="Enter IMDb ID (e.g., tt0133093)"
+          placeholder="Enter IMDb ID (e.g., tt4154796)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onEnter?.()}

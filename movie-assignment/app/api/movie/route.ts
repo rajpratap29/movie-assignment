@@ -51,10 +51,57 @@ export async function GET(req: Request) {
       ?.map((r: any) => r.content)
       ?.join("\n\n");
 
-    // 🔥 TEMP AI (next step we make real)
-    const fakeSummary =
-      "Audience reactions are generally positive with praise for performances and story.";
-    const fakeSentiment = "Positive";
+let aiSummary = "Not enough audience reviews available for AI analysis.";
+let sentiment = "Mixed";
+
+if (reviewsText && reviewsText.length > 50) {
+  try {
+    const aiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "nvidia/nemotron-3-nano-30b-a3b:free",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You analyze movie audience sentiment. Always return valid JSON.",
+          },
+          {
+            role: "user",
+            content: `
+                      Analyze the following movie audience reviews.
+
+                      Return STRICT JSON in this format:
+
+                      {
+                        "summary": "3-4 line audience summary",
+                        "sentiment": "Positive | Mixed | Negative"
+                      }
+
+                      Reviews:
+                      ${reviewsText}
+                      `,
+          },
+        ],
+        temperature: 0.3,
+      }),
+    });
+
+    const aiData = await aiRes.json();
+    const text = aiData.choices?.[0]?.message?.content || "{}";
+
+    const parsed = JSON.parse(text);
+
+    aiSummary = parsed.summary;
+    sentiment = parsed.sentiment;
+  } catch (err) {
+    console.error("OpenRouter AI failed:", err);
+  }
+}
 
     return NextResponse.json({
       success: true,
@@ -71,8 +118,8 @@ export async function GET(req: Request) {
           .join(", "),
       },
       reviewsText,
-      aiSummary: fakeSummary,
-      sentiment: fakeSentiment,
+      aiSummary,
+      sentiment,
     });
   } catch (error) {
     console.error(error);

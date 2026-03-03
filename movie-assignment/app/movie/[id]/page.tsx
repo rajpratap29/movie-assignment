@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import MovieCard from "@/components/MovieCard";
+import Spinner from "@/components/Spinner";
 import SentimentBadge from "@/components/SentimentBadge";
 
 export default function MoviePage() {
@@ -23,16 +24,22 @@ export default function MoviePage() {
       });
   }, [id]);
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <Spinner />
+      </main>
+    );
+  }
 
   if (!data?.success) return <div className="p-6">Movie not found.</div>;
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-8 items-start md:items-center">
+      <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row gap-8 items-stretch">
         <MovieCard movie={data.movie} />
 
-        <div>
+        <div className="flex-1">
           <div className="bg-dark-100 border border-light-100/10 rounded-2xl p-6 shadow-inner shadow-light-100/5">
             <h2 className="text-2xl font-bold text-white">Description</h2>
             <p className="mt-3 leading-relaxed text-light-200">

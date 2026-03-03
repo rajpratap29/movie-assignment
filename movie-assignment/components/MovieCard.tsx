@@ -14,7 +14,7 @@ export default function MovieCard({ movie }: Props) {
   const { title, rating, poster, year, language } = movie;
 
   return (
-    <div className="movie-card">
+    <div className="movie-card w-full md:w-65 shrink-0">
       <img src={poster || "/no-movie.png"} alt={title} />
 
       <div className="mt-4">
