@@ -18,6 +18,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false });
   }
 
+  if (!/^tt\d{6,}$/.test(imdbId)) {
+    return NextResponse.json({ success: false });
+  }
+
   try {
     const findRes = await fetch(
       `${TMDB_BASE}/find/${imdbId}?external_source=imdb_id`,
@@ -25,7 +29,13 @@ export async function GET(req: Request) {
     );
     const findData = await findRes.json();
 
-    const movieId = findData.movie_results?.[0]?.id;
+    const movieResult = findData.movie_results?.[0];
+
+    if (!movieResult || !movieResult.id) {
+      return NextResponse.json({ success: false });
+    }
+
+    const movieId = movieResult.id;
 
     if (!movieId) {
       return NextResponse.json({ success: false });
@@ -33,6 +43,17 @@ export async function GET(req: Request) {
 
     const movieRes = await fetch(`${TMDB_BASE}/movie/${movieId}`, API_OPTIONS);
     const movie = await movieRes.json();
+
+    if (
+      !movie?.imdb_id ||
+      movie.imdb_id.toLowerCase() !== imdbId.toLowerCase()
+    ) {
+      return NextResponse.json({ success: false });
+    }
+
+    if (!movie.title || !movie.poster_path) {
+      return NextResponse.json({ success: false });
+    }
 
     const creditRes = await fetch(
       `${TMDB_BASE}/movie/${movieId}/credits`,
